@@ -1143,19 +1143,18 @@ static int sony_camera_i2c_write(struct sony_camera_data *data,
 	cci_ctrl.cfg.cci_i2c_write_cfg.data_type = 1; // TODO: CAMERA_SENSOR_I2C_TYPE_BYTE
 	cci_ctrl.cfg.cci_i2c_write_cfg.addr_type = type;
 	cci_ctrl.cfg.cci_i2c_write_cfg.size = len;
-	if (slave_addr == 0x007c && addr == 0x6180) {
+	if (slave_addr == 0x007c) {
 		LOGE("i2c write skipped slave0x%04x,addr0x%04x,type0x%02x,len0x%02x\n",
 			slave_addr, addr, type, len);
-		printk(KERN_CONT "dumping skipped data: ");
+		printk(KERN_CONT "dumping skipped i2c data: ");
 		for (i = 0; i < len; i++) {
 			printk(KERN_CONT " %d ", buf[i]);
 		}
 		printk(KERN_CONT "\n");
-		return 0;
 	}
 	rc = v4l2_subdev_call(data->cci_info.cci_subdev,
 		core, ioctl, VIDIOC_MSM_CCI_CFG, &cci_ctrl);
-	LOGE("i2c write (%d) slave0x%04x,addr0x%04x,type0x%02x,len0x%02x\n",
+	LOGD("i2c write (%d) slave0x%04x,addr0x%04x,type0x%02x,len0x%02x\n",
 		rc, slave_addr, addr, type, len);
 	if (need_free)
 		vfree(reg_settings);
